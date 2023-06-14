@@ -41,6 +41,7 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(attackCoolDown);
 
         if (!isDead && !playerController.isDead)
         {
@@ -75,22 +76,22 @@ public class EnemyController : MonoBehaviour
                     attackCoolDown = 2.6f;
                 }
 
+            }else if(attackCoolDown < 2.6f && attackCoolDown >= 0.1f)
+            {
+                attackCoolDown -= Time.deltaTime;
+                agent.speed = 0.0f;
+
             }
-            else
+            else if(attackCoolDown <= 0.1f)
             {
                 agent.speed = 1.0f;
                 attackCoolDown = 2.6f;
                 animator.SetBool("playerDetected", false);
 
-
             }
 
         }
-        else
-        {
-            animator.SetBool("playerDetected", false);
-
-        }
+        
 
 
         if (health <= 0)
