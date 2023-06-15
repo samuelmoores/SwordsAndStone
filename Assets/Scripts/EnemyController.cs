@@ -13,6 +13,7 @@ public class EnemyController : MonoBehaviour
     public Transform Player;
     PlayerController playerController;
     ColdronController coldronController;
+    HealthBar healthBar;
 
     public int locationIndex = 0;
     bool playerDetected = false;
@@ -20,7 +21,6 @@ public class EnemyController : MonoBehaviour
     public bool isDead = false;
     float attackCoolDown = 2.6f;
     bool incrementingLocationIndex = true;
-    bool attack = false;
 
 
     // Start is called before the first frame update
@@ -31,6 +31,7 @@ public class EnemyController : MonoBehaviour
         Player = GameObject.Find("CastleGuard").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        healthBar = GameObject.Find("EnemyHealthBar").GetComponent<HealthBar>();
 
         coldronController = GameObject.Find("Coldrun").GetComponent<ColdronController>();
 
@@ -41,7 +42,8 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(attackCoolDown);
+        healthBar.SetHealth(health);
+
 
         if (!isDead && !playerController.isDead)
         {

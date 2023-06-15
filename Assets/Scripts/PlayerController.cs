@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     Camera cam;
     EnemyController enemyController;
     ColdronController coldronController;
+    HealthBar healthBar;
 
     Vector3 movementDirection;
     Quaternion playerRotation;
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         animator.SetBool("isRunning", false);
+        healthBar = GameObject.Find("HealthBar").GetComponent<HealthBar>();
 
         //Set camera position
         camOffset = new Vector3(0.00f, 3.28f, -4.82f);
@@ -53,8 +55,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        if(!isDead)
+        healthBar.SetHealth(health);
+
+
+        if (!isDead)
         {
             horizontalMovement = Input.GetAxisRaw("Horizontal");
             verticalMovement = Input.GetAxisRaw("Vertical");
@@ -82,7 +86,7 @@ public class PlayerController : MonoBehaviour
         if(health <= 0)
         {
             animator.SetBool("isDead", true);
-
+            healthBar.SetHealth(health);
             health = 0.0f;
             isDead = true;
         }
@@ -119,7 +123,7 @@ public class PlayerController : MonoBehaviour
             isAttacking = true;
             animator.SetTrigger("Attack");
 
-            if (detectedEnemy && coldronController.cauldronUsed)
+            if (detectedEnemy)
             {
                 enemyController.takeDamage(10.0f);
             }

@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
     EnemyController enemyController;
     JournalController journalController;
     ColdronController coldronController;
-    bool gamePaused = false;
+    AudioSource audioSource;
+    public bool gamePaused = false;
     bool youDied = false;
 
     public bool interactMessage = false;
@@ -26,27 +27,28 @@ public class GameManager : MonoBehaviour
         journalController = GameObject.Find("Journal").GetComponent<JournalController>();
         enemyController = GameObject.Find("Goblin").GetComponent<EnemyController>();
         coldronController = GameObject.Find("Coldrun").GetComponent<ColdronController>();
+        audioSource = GameObject.Find("Sound").GetComponent<AudioSource>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if(Input.GetKeyDown(KeyCode.Tab))
         {
-           
             if(!gamePaused)
             {
-                Time.timeScale = 0.0f;
                 gamePaused = true;
-
+                Time.timeScale = 0.0f;
+                audioSource.volume = 0.0f;
             }
             else
             {
-                Time.timeScale = 1.0f;
                 gamePaused = false;
+                Time.timeScale = 1.0f;
+                audioSource.volume = 1.0f;
+
             }
-            
         }
 
 
@@ -78,17 +80,17 @@ public class GameManager : MonoBehaviour
 
     private void OnGUI()
     {
-        GUI.Box(new Rect(50, 25, 250, 25), "Player Health: " + playerController.health);
+        //GUI.Box(new Rect(50, 25, 125, 25), "Player Health: " + playerController.health);
 
-        GUI.Box(new Rect(1760, 25, 125, 25), "Hold [esc] to pause");
+        //GUI.Box(new Rect(Screen.width - 160, 25, 125, 25), "Press [tab] to pause");
 
         if(gamePaused)
         {
-            GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 200, 500, 25), "Press [W, A, S, D] to move", gs);
-            GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [E] to interact", gs);
-            GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 0, 500, 25), "Hold [F] to block", gs);
-            GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 + 100, 500, 25), "Press [E] to attack", gs);
-            GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 + 200, 500, 25), "Press [Q] to quit", gs);
+            //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [W, A, S, D] to move", gs);
+            //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 50, 500, 25), "Press [E] to interact", gs);
+            //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 0, 500, 25), "Hold [F] to block", gs);
+            //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 + 50, 500, 25), "Press [E] to attack", gs);
+           //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 + 100, 500, 25), "Press [Q] to quit", gs);
 
 
         }
@@ -98,32 +100,32 @@ public class GameManager : MonoBehaviour
         {
             if (interactMessage && i == playerController.interactTag)
             {
-                GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [E] to " + interactMessages[i], gs);
+                //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [E] to " + interactMessages[i], gs);
             }
         }
 
         if((playerController.interactTag == 0) && journalController.readJournal)
         {
-            GUI.Box(new Rect(Screen.width / 2 - 400, Screen.height / 2 - 400, 800, 800), journalController.journalEntry, gsJournal);
+            //GUI.Box(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 300, 300), journalController.journalEntry, gsJournal);
 
         }
 
 
         if(coldronController.cauldronUsed)
         {
-            GUI.Box(new Rect(50, 75, 250, 25), "Goblin Health: " + enemyController.health);
+            //GUI.Box(new Rect(50, 75, 125, 25), "Goblin Health: " + enemyController.health);
 
         }
 
         if (playerController.showChemicals)
         {
-            GUI.Box(new Rect(50, 150, 250, 40), "Potion Ingredients\nChemicals " + playerController.chemicals + " / 5");
+            //GUI.Box(new Rect(50, 125, 125, 40), "Potion Ingredients\nChemicals " + playerController.chemicals + " / 5");
 
         }
 
         if(playerController.canExit)
         {
-            GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [E] to exit", gs);
+           // GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [E] to exit", gs);
 
         }
 

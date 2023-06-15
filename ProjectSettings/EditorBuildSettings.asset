@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Town.unity
     guid: ff19a048fd6e93b4cac3c8ffb682fab9
   - enabled: 1
-    path: Assets/MedievalTownExteriors/Scenes/Town.unity
+    path: Assets/Envirnment/MedievalTownExteriors/Scenes/Town.unity
     guid: e07f2e400a2d7164988fa11609016066
   m_configObjects: {}
