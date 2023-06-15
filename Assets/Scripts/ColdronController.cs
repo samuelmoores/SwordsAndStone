@@ -8,6 +8,7 @@ public class ColdronController : MonoBehaviour
     public GameObject Player;
     PlayerController playerController;
     GameManager gameManager;
+    ChemicalController chemicalController;
 
     bool changeColor = false;
     Color[] colors = { Color.red, Color.blue, Color.magenta, Color.yellow, Color.cyan, Color.black };
@@ -31,6 +32,8 @@ public class ColdronController : MonoBehaviour
         playerController = Player.GetComponent<PlayerController>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
+        chemicalController = GameObject.Find("Chemicals").GetComponent<ChemicalController>();
+        
         particlesInst = Instantiate(particles, transform.position + particlesOffset, Quaternion.identity, transform);
         ps = particlesInst.GetComponent<ParticleSystem>();
         pm = ps.main;
@@ -47,13 +50,13 @@ public class ColdronController : MonoBehaviour
         {
             for(int i = 0; i <= chemicalRequirment; i++)
             {
-                if(playerController.chemicals == i)
+                if(gameManager.Dungeon.chemicals == i)
                 {
                     coldrunLight.GetComponent<Light>().color = colors[i];
                     pm.startColor = colors[i];
                     cauldronUsed = true;
 
-                    if (playerController.chemicals == 5)
+                    if (gameManager.Dungeon.chemicals == 5)
                     {
                         madePotion = true;
                     }

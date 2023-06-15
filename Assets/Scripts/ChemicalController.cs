@@ -5,7 +5,6 @@ using UnityEngine;
 public class ChemicalController : MonoBehaviour
 {
     GameManager gameManager;
-    PlayerController Player;
     bool foundChemical = false;
 
     //adjust this to change speed
@@ -17,7 +16,6 @@ public class ChemicalController : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        Player = GameObject.Find("CastleGuard").GetComponent<PlayerController>();
 
     }
 
@@ -35,7 +33,6 @@ public class ChemicalController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.E) && foundChemical)
         {
-            Player.chemicals++;
             gameManager.interactMessage = false;
             Destroy(this.gameObject);
 
@@ -47,7 +44,7 @@ public class ChemicalController : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-
+            gameManager.Dungeon.chemicals++;
             foundChemical = true;
 
         }

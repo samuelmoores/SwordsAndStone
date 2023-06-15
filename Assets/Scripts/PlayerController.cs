@@ -23,15 +23,11 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed;
 
     public float health = 100.0f;
-    string[] interactTags = { "Journal", "Coldrun", "Chemical" };
-    public int interactTag = 0;
-    public int chemicals = 0;
+    float attackCooldown = 0.0f;
+
     public bool isBlocking = false;
-    public bool isAttacking = false;
     public bool detectedEnemy = false;
     public bool isDead = false;
-    float attackCooldown = 0.0f;
-    public bool showChemicals = false;
     public bool canExit = false;
     
 
@@ -40,11 +36,12 @@ public class PlayerController : MonoBehaviour
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+
         coldronController = GameObject.Find("Coldrun").GetComponent<ColdronController>();
+        healthBar = GameObject.Find("HealthBar").GetComponent<HealthBar>();
+
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
-        animator.SetBool("isRunning", false);
-        healthBar = GameObject.Find("HealthBar").GetComponent<HealthBar>();
 
         //Set camera position
         camOffset = new Vector3(0.00f, 3.28f, -4.82f);
@@ -55,8 +52,61 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Move();
+
+        //update health
         healthBar.SetHealth(health);
 
+        //atacking
+        attackCooldown -= Time.deltaTime;
+
+        if (Input.GetKey(KeyCode.R) && attackCooldown <= 0.0f)
+        {
+            Attack();
+        }
+
+        //blocking
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            isBlocking = true;
+            animator.SetBool("isBlocking", true);
+
+        }
+
+        if (Input.GetKeyUp(KeyCode.F))
+        {
+            isBlocking = false;
+            animator.SetBool("isBlocking", false);
+
+        }
+
+        if (Input.GetKey(KeyCode.E) && canExit)
+        {
+            SceneManager.LoadScene("Town");
+        }
+
+    }
+
+    private void FixedUpdate()
+    {
+        transform.Translate(movementDirection * Speed * Time.deltaTime, Space.World);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, playerRotation, rotationSpeed * Time.deltaTime);
+
+    }
+
+    public void Die()
+    {
+        animator.SetBool("isDead", true);
+        healthBar.SetHealth(health);
+        health = 0.0f;
+        isDead = true;
+        
+    }
+
+    public void Move()
+    {
+        //move camera
+        cam.transform.position = transform.position + camOffset;
 
         if (!isDead)
         {
@@ -81,83 +131,30 @@ public class PlayerController : MonoBehaviour
 
             }
         }
-
-
-        if(health <= 0)
-        {
-            animator.SetBool("isDead", true);
-            healthBar.SetHealth(health);
-            health = 0.0f;
-            isDead = true;
-        }
-        
-        //move camera
-        cam.transform.position = transform.position + camOffset;
-
-        Block();
-
-        Attack();
-          
-        if (Input.GetKey(KeyCode.E) && canExit)
-        {
-            SceneManager.LoadScene("Town");
-        }
-
-    }
-
-    private void FixedUpdate()
-    {
-        transform.Translate(movementDirection * Speed * Time.deltaTime, Space.World);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, playerRotation, rotationSpeed * Time.deltaTime);
-
     }
 
     public void Attack()
     {
-        attackCooldown -= Time.deltaTime;
 
-        if (Input.GetKey(KeyCode.R) && attackCooldown <= 0.0f)
+        attackCooldown = 0.75f;
+
+        animator.SetTrigger("Attack");
+
+        if (detectedEnemy)
         {
-            attackCooldown = 0.75f;
-
-            isAttacking = true;
-            animator.SetTrigger("Attack");
-
-            if (detectedEnemy)
+            enemyController.takeDamage(10.0f);
+            if(enemyController.health <= 0.0f)
             {
-                enemyController.takeDamage(10.0f);
+                enemyController.Die();
             }
-
         }
 
-        if (Input.GetKeyUp(KeyCode.R))
-        {
-            isAttacking = false;
-
-        }
 
         if(attackCooldown <= 0.0f)
         {
             attackCooldown = 0.0f;
         }
 
-    }
-
-    public void Block()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            isBlocking = true;
-            animator.SetBool("isBlocking", true);
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.F))
-        {
-            isBlocking = false;
-            animator.SetBool("isBlocking", false);
-
-        }
     }
 
     public void TakeDamage(float damageAmount)
@@ -167,14 +164,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        for(int i = 0; i < interactTags.Length; i++)
-        {
-            if(other.tag == interactTags[i])
-            {
-                interactTag = i;
-            }
-        }
-
+        
         if(other.gameObject.CompareTag("Enemy"))
         {
             enemyController = other.gameObject.GetComponent<EnemyController>();
@@ -201,10 +191,7 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag("Exit"))
         {
-            if (chemicals == 5)
-            {
-                canExit = false;
-            }
+            
         }
 
     }

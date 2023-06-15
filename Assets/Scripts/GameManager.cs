@@ -10,31 +10,48 @@ public class GameManager : MonoBehaviour
 
     PlayerController playerController;
     EnemyController enemyController;
-    JournalController journalController;
-    ColdronController coldronController;
     AudioSource audioSource;
+
+
     public bool gamePaused = false;
     bool youDied = false;
 
     public bool interactMessage = false;
-    public string[] interactMessages = { "read journal", "use cauldrun", "collect chemical" };
+
+    public struct LevelOne
+    {
+        public JournalController journalController;
+        public ColdronController coldronController;
+
+        public int chemicals;
+
+    }
+
+    public LevelOne Dungeon;
 
 
     // Start is called before the first frame update
     void Start()
     {
         playerController = GameObject.Find("CastleGuard").GetComponent<PlayerController>();
-        journalController = GameObject.Find("Journal").GetComponent<JournalController>();
         enemyController = GameObject.Find("Goblin").GetComponent<EnemyController>();
-        coldronController = GameObject.Find("Coldrun").GetComponent<ColdronController>();
         audioSource = GameObject.Find("Sound").GetComponent<AudioSource>();
+
+        if(SceneManager.GetActiveScene().name == "Dungeon")
+        {
+            Dungeon.journalController = GameObject.Find("Journal").GetComponent<JournalController>();
+            Dungeon.coldronController = GameObject.Find("Coldrun").GetComponent<ColdronController>();
+            Dungeon.chemicals = 0;
+        }
+
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Tab))
+        
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if(!gamePaused)
             {
@@ -84,51 +101,9 @@ public class GameManager : MonoBehaviour
 
         //GUI.Box(new Rect(Screen.width - 160, 25, 125, 25), "Press [tab] to pause");
 
-        if(gamePaused)
-        {
-            //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [W, A, S, D] to move", gs);
-            //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 50, 500, 25), "Press [E] to interact", gs);
-            //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 0, 500, 25), "Hold [F] to block", gs);
-            //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 + 50, 500, 25), "Press [E] to attack", gs);
-           //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 + 100, 500, 25), "Press [Q] to quit", gs);
-
-
-        }
-
-
-        for (int i = 0; i < interactMessages.Length; i++)
-        {
-            if (interactMessage && i == playerController.interactTag)
-            {
-                //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [E] to " + interactMessages[i], gs);
-            }
-        }
-
-        if((playerController.interactTag == 0) && journalController.readJournal)
-        {
-            //GUI.Box(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 300, 300), journalController.journalEntry, gsJournal);
-
-        }
-
-
-        if(coldronController.cauldronUsed)
-        {
-            //GUI.Box(new Rect(50, 75, 125, 25), "Goblin Health: " + enemyController.health);
-
-        }
-
-        if (playerController.showChemicals)
-        {
-            //GUI.Box(new Rect(50, 125, 125, 40), "Potion Ingredients\nChemicals " + playerController.chemicals + " / 5");
-
-        }
-
-        if(playerController.canExit)
-        {
-           // GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [E] to exit", gs);
-
-        }
-
+        
+        //GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "Press [E]", gs);
+        
         if(youDied)
         {
             GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 100, 500, 25), "You Died\n Play again [P] or [Q] to exit", gs);

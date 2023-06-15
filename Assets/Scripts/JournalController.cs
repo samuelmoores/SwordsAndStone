@@ -9,6 +9,8 @@ public class JournalController : MonoBehaviour
     PlayerController playerController;
     public bool readJournal = false;
     public bool foundJournal = false;
+    public bool showChemicals = false;
+
 
     public string journalEntry =
     "I've lost track of days in this dungeon\n\n" +
@@ -34,7 +36,7 @@ public class JournalController : MonoBehaviour
         {
             gameManager.interactMessage = false;
             readJournal = true;
-            playerController.showChemicals = true;
+            showChemicals = true;
         }
 
         

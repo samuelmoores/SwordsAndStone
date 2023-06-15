@@ -16,7 +16,6 @@ public class EnemyController : MonoBehaviour
     HealthBar healthBar;
 
     public int locationIndex = 0;
-    bool playerDetected = false;
     public float health = 100.0f;
     public bool isDead = false;
     float attackCoolDown = 2.6f;
@@ -47,70 +46,76 @@ public class EnemyController : MonoBehaviour
 
         if (!isDead && !playerController.isDead)
         {
-            
-            if(coldronController.cauldronUsed)
+            Move();
+            Attack();
+        }
+
+    }//Update
+
+    private void Move()
+    {
+        //Move
+        if (coldronController.cauldronUsed)
+        {
+            agent.destination = Player.position;
+            agent.updateRotation = true;
+        }
+        else
+        {
+            if (agent.remainingDistance < 1.0f && !agent.pathPending)
+                MoveToNextPatrolLocation();
+        }
+    }
+
+    private void Attack()
+    {
+        //Attack
+        if (Vector3.Distance(transform.position, playerController.transform.position) < 1.5f && !playerController.isDead)
+        {
+            animator.SetBool("playerDetected", true);
+            agent.speed = 0.0f;
+
+            //Start attack cooldown
+            attackCoolDown -= Time.deltaTime;
+
+            //Check impact point
+            if (attackCoolDown > 1.2f && attackCoolDown < 1.4f && !playerController.isBlocking)
             {
-                agent.destination = Player.position;
-                agent.updateRotation = true;
-            }else
-            {
-                if(agent.remainingDistance < 1.0f && !agent.pathPending)
-                    MoveToNextPatrolLocation();
-            }
-            
-            if (Vector3.Distance(transform.position, playerController.transform.position) < 1.5f && !playerController.isDead)
-            {
-
-                animator.SetBool("playerDetected", true);
-
-                agent.speed = 0.0f;
-
-
-                attackCoolDown -= Time.deltaTime;
-
-                if(attackCoolDown > 1.2f && attackCoolDown < 1.4f && !playerController.isBlocking)
+                playerController.TakeDamage(1.0f);
+                if(playerController.health <= 0.0f)
                 {
-                    playerController.TakeDamage(1.0f);
+                    playerController.Die();
+                    animator.SetBool("playerDead", true);
                 }
-
-                if(attackCoolDown <= 0.0f)
-                {
-                    attackCoolDown = 2.6f;
-                }
-
-            }else if(attackCoolDown < 2.6f && attackCoolDown >= 0.1f)
-            {
-                attackCoolDown -= Time.deltaTime;
-                agent.speed = 0.0f;
-
             }
-            else if(attackCoolDown <= 0.1f)
+
+            //Has cooldown ended?
+            if (attackCoolDown <= 0.0f)
             {
-                agent.speed = 1.0f;
                 attackCoolDown = 2.6f;
-                animator.SetBool("playerDetected", false);
-
             }
 
-        }
-        
-
-
-        if (health <= 0)
+        }//continue cooldown if hasn't ended
+        else if (attackCoolDown < 2.6f && attackCoolDown >= 0.1f)
         {
-            health = 0.0f;
-            isDead = true;
-            animator.SetBool("isDead", true);
-            Destroy(this.gameObject, 15.0f);
+            attackCoolDown -= Time.deltaTime;
+            agent.speed = 0.0f;
 
-        }
-
-        if(playerController.isDead)
+        }//Reset cooldown if ended
+        else if (attackCoolDown <= 0.1f)
         {
-            playerDetected = false;
-            animator.SetBool("playerDead", true);
+            agent.speed = 1.0f;
+            attackCoolDown = 2.6f;
+            animator.SetBool("playerDetected", false);
         }
+    }
 
+    public void Die()
+    {
+        health = 0.0f;
+        isDead = true;
+        animator.SetBool("isDead", true);
+        Destroy(this.gameObject, 15.0f);
     }
 
     public void takeDamage(float damageAmount)
@@ -118,29 +123,7 @@ public class EnemyController : MonoBehaviour
         health -= damageAmount;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.tag == "Player")
-        {
-
-            if(!playerController.isDead && coldronController.cauldronUsed)
-            {
-                playerDetected = true;
-            }
-          
-        }
-
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            playerDetected = false;
-
-        }
-    }
-
+    
     void InitializePatrolRoute()
     {
         locationIndex = 0;
