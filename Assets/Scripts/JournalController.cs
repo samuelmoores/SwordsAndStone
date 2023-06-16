@@ -11,7 +11,6 @@ public class JournalController : MonoBehaviour
     public bool foundJournal = false;
     public bool showChemicals = false;
 
-
     public string journalEntry =
     "I've lost track of days in this dungeon\n\n" +
     "I must brew a potion\n\n" +

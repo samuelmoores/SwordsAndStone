@@ -16983,7 +16983,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 416386656469751746, guid: 9175d08a6bdddeb48afa15d1b714d918, type: 3}
       propertyPath: m_Name
-      value: Door
+      value: Exit
       objectReference: {fileID: 0}
     - target: {fileID: 416386656469751746, guid: 9175d08a6bdddeb48afa15d1b714d918, type: 3}
       propertyPath: m_TagString
@@ -22102,6 +22102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2093362677}
+  - component: {fileID: 2093362678}
   m_Layer: 0
   m_Name: Chemicals
   m_TagString: Untagged
@@ -22130,6 +22131,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2093362678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093362676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f5325942bf282c4f902efe19c8dc02a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2094106068
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22281,6 +22294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   readJournal: 0
   foundJournal: 0
+  showChemicals: 0
   journalEntry: "I've lost track of days in this dungeon\n\nI must brew a potion\n\nThere
     are goblins beneath\n\nMy chemicals gone at witching hour\n\nThe coldrun is the
     exit\n\nAnd their return\n\n-the alchemist\n September 1693"

@@ -50,7 +50,7 @@ public class EnemyController : MonoBehaviour
             Attack();
         }
 
-    }//Update
+    }
 
     private void Move()
     {
